@@ -1,0 +1,31 @@
+﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>creaCallejero</Name>
+  <AddInID>{d350a5d1-f2c6-4890-b9eb-f284de335f31}</AddInID>
+  <Description>Addin para crear nuevos callejeros en las capas MALLAVIAL y CRUCEMALLAVIAL</Description>
+  <Version>1.0</Version>
+  <Image>Images\creaCallejero_1.png</Image>
+  <Author>Javier Echavez</Author>
+  <Company>Ludycom</Company>
+  <Date>16/11/2021</Date>
+  <Targets>
+    <Target name="Desktop" version="10.6" />
+  </Targets>
+  <AddIn language="CLR" library="creaCallejero.dll" namespace="creaCallejero">
+    <ArcMap>
+      <DockableWindows>
+        <DockableWindow id="Ludycom_creaCallejero_dockWin" class="dockWin+AddinImpl" caption="Dockable Window para ingresar parametros" image="Images\dockWin.png">
+          <InitialPlacement height="300" width="300" state="pinned" position="right" />
+        </DockableWindow>
+      </DockableWindows>
+      <Editor>
+        <Commands>
+          <Tool id="Ludycom_creaCallejero_creaCallejero" class="creaCallejero" message="Comando de addin para la creacion de nuevos callejeros. Ingresar &quot;NOMBREVIA&quot; y &quot;TIPOVIA&quot;" caption="Crear Callejero" tip="Crea un nuevo callejero agregando NOMBREVIA y TIPOVIA como parametros de entrada" category="Add-In Controls" image="Images\creaCallejero.png" onDemand="false">
+            <Construction>
+              <Category>Polyline Construction</Category>
+            </Construction>
+          </Tool>
+        </Commands>
+      </Editor>
+    </ArcMap>
+  </AddIn>
+</ESRI.Configuration>

@@ -1,0 +1,16 @@
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\creaCallejero.dll
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\creaCallejero.pdb
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Carto.dll
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Display.dll
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Geodatabase.dll
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Carto.xml
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Display.xml
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\ESRI.ArcGIS.Geodatabase.xml
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.csprojResolveAssemblyReference.cache
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.csproj.GenerateResource.Cache
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.dll
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.pdb
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.Properties.Resources.resources
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.WinFormNombreTipoVia.resources
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\obj\Debug\creaCallejero.Login.resources
+C:\Users\Javier Echavez\Documents\ArcGIS\addins\Desktop10.6\creaCallejero\creaCallejero\bin\Debug\creaCallejero.esriAddIn

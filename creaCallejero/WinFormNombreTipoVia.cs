@@ -25,6 +25,8 @@ namespace creaCallejero
             s_btnCancelar = btnCancelar;
             s_txtNombreVia = txtBoxNombreVia;
             s_comboTipoVia = cmbBoxTipoVia;
+            creaCallejero tiposDeVia = new creaCallejero();
+            cmbBoxTipoVia.Items.AddRange(tiposDeVia.siglasComboBox());
             xClicked = true;
         }
 
@@ -46,13 +48,15 @@ namespace creaCallejero
             creaCallejero calcular = new creaCallejero();
             try
             {
-                calcular.calculateAllFields(s_txtNombreVia.Text, s_comboTipoVia.Text);
+                Global.creationStatus = true;
+                calcular.calculateAllFields(Global.viaACalcular ,s_txtNombreVia.Text, s_comboTipoVia.Text);
+                Global.creationStatus = false;
+                Global.viaACalcular = null;
             }
             catch
             {
                 MessageBox.Show("Verifique que está editando sobre una capa 'MALLAVIAL' valida");
-                creaCallejero cancelar = new creaCallejero();
-                cancelar.deleteFeature();
+                calcular.deleteFeature();
             }
             xClicked = false;
             this.Close();

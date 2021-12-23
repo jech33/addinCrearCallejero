@@ -38,54 +38,27 @@
             // 
             // cmbBoxTipoVia
             // 
-            this.cmbBoxTipoVia.DropDownHeight = 100;
+            this.cmbBoxTipoVia.DropDownHeight = 150;
             this.cmbBoxTipoVia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBoxTipoVia.FormattingEnabled = true;
             this.cmbBoxTipoVia.IntegralHeight = false;
-            this.cmbBoxTipoVia.Items.AddRange(new object[] {
-            "S/N",
-            "AL",
-            "AV",
-            "BA",
-            "CR",
-            "CJ",
-            "CA",
-            "GA",
-            "JR",
-            "ML",
-            "OV",
-            "PJ",
-            "PL",
-            "PQ",
-            "PR",
-            "PZ",
-            "PS",
-            "CM",
-            "CU",
-            "SE",
-            "PU",
-            "BO",
-            "RI",
-            "AU",
-            "CI",
-            "VI"});
-            this.cmbBoxTipoVia.Location = new System.Drawing.Point(143, 87);
+            this.cmbBoxTipoVia.Location = new System.Drawing.Point(143, 48);
             this.cmbBoxTipoVia.Name = "cmbBoxTipoVia";
             this.cmbBoxTipoVia.Size = new System.Drawing.Size(283, 24);
             this.cmbBoxTipoVia.TabIndex = 0;
             // 
             // txtBoxNombreVia
             // 
-            this.txtBoxNombreVia.Location = new System.Drawing.Point(143, 41);
+            this.txtBoxNombreVia.Location = new System.Drawing.Point(143, 94);
             this.txtBoxNombreVia.Name = "txtBoxNombreVia";
             this.txtBoxNombreVia.Size = new System.Drawing.Size(283, 22);
             this.txtBoxNombreVia.TabIndex = 1;
-            this.txtBoxNombreVia.Text = "SN";
+            this.txtBoxNombreVia.Text = "SIN NOMBRE";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 44);
+            this.label1.Location = new System.Drawing.Point(31, 97);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 17);
             this.label1.TabIndex = 2;
@@ -120,7 +93,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(59, 90);
+            this.label2.Location = new System.Drawing.Point(59, 51);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 17);
             this.label2.TabIndex = 5;

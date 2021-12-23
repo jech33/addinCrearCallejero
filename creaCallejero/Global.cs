@@ -3,17 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Editor;
+using ESRI.ArcGIS.Framework;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.Geoprocessor;
+using ESRI.ArcGIS.AnalysisTools;
+using ESRI.ArcGIS.DataManagementTools;
 
 namespace creaCallejero
 {
     class Global
     {
+        public static IFeature viaACalcular = null;
         public static ILayer distritoLayer = null;
         public static ILayer mallaVialLayer = null;
         public static ILayer cruceMallaVialLayer = null;
         public static String nombreMaquina = Environment.MachineName;
-        public static String nombreUsuario;
+        public static String nombreUsuario = Environment.UserName;
+        public static DateTime fechaCreacionLocal;
+        public static DateTime fechaCreacionUTC;
+        public static DateTime fechaModificacionLocal;
+        public static DateTime fechaModificacionUTC;
+        public static bool creationStatus = false;
+        public static bool extensionActiva = false;
+
+        // Capas strings
+        public static String mallavialName = "MALLAVIALDF";
+        public static String cruceMallaVialName = "CRUCEMALLAVIAL_1";
+        public static String distritoName = "CONTUGAS.DISTRITO";
 
         // Base de datos
         public static String connectionString = 

@@ -1,8 +1,8 @@
 ﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>creaCallejero</Name>
   <AddInID>{d350a5d1-f2c6-4890-b9eb-f284de335f31}</AddInID>
-  <Description>Addin para crear nuevos callejeros en las capas MALLAVIAL y CRUCEMALLAVIAL</Description>
-  <Version>1.0.1</Version>
+  <Description>Addin para crear nuevos callejeros en las capas MALLAVIALDF y CRUCEMALLAVIAL</Description>
+  <Version>1.0.3</Version>
   <Image>Images\creaCallejero_1.png</Image>
   <Author>Javier Echavez</Author>
   <Company>Ludycom</Company>
@@ -15,7 +15,7 @@
       <DockableWindows></DockableWindows>
       <Extensions>
         <Extension id="Ludycom_creaCallejero_editaCallejero" class="editaCallejero" productName="Editar Callejero" showInExtensionDialog="true" autoLoad="true">
-          <Description>Editar Callejero 1.0.1&#13;&#10;
+          <Description>Editar Callejero 1.0.3&#13;&#10;
 Copyright ©2021 Ludycom. All Rights Reserved&#13;&#10;&#13;&#10;
 Habilita la edición automática de callejeros existentes al realizar &#13;&#10;
 modificaciones de geometría, o del atributo "NOMBREVIA", en la capa &#13;&#10;

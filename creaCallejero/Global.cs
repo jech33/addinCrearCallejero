@@ -34,9 +34,16 @@ namespace creaCallejero
         public static bool extensionActiva = false;
 
         // Capas strings
-        public static String mallavialName = "MALLAVIALDF";
-        public static String cruceMallaVialName = "CRUCEMALLAVIAL_1";
-        public static String distritoName = "CONTUGAS.DISTRITO";
+
+        // Prod
+        //public static String mallavialName = "CONTUGAS.MALLAVIALDF";
+        //public static String cruceMallaVialName = "CONTUGAS.CRUCEMALLAVIAL";
+        //public static String distritoName = "CONTUGAS.DISTRITO";
+
+        // Dev
+        public static String mallavialName = "CONTUGAS_MALLAVIALDF";
+        public static String cruceMallaVialName = "CONTUGAS_CRUCEMALLAVIAL";
+        public static String distritoName = "CONTUGAS_DISTRITO";
 
         // Base de datos
         public static String connectionString = 

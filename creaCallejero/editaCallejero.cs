@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.Diagnostics;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.ArcMapUI;
@@ -9,6 +10,7 @@ using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Desktop.AddIns;
+using ESRI.ArcGIS.Framework;
 
 namespace creaCallejero
 {
@@ -23,7 +25,6 @@ namespace creaCallejero
         creaCallejero callejero;
         IGeometryCollection cruceGeometryToEdit = new PolylineClass();
         IFeature viaEnEdicionCruceMallavial;
-        bool didUserSplit = false;
 
         public editaCallejero()
         {
@@ -43,7 +44,7 @@ namespace creaCallejero
             m_editEvents5 = m_editor as IEditEvents5_Event;
             callejero = new creaCallejero();
             m_editEvents.OnChangeFeature += OnChangeFeature;
-            //m_editEvents.OnSelectionChanged += OnSelectionChanged;
+            m_editEvents.OnSelectionChanged += OnSelectionChanged;
         }
 
         public void UninitalizeExtension()
@@ -53,7 +54,7 @@ namespace creaCallejero
 
             // Detach event handlers
             m_editEvents.OnChangeFeature -= OnChangeFeature;
-            //m_editEvents.OnSelectionChanged -= OnSelectionChanged;
+            m_editEvents.OnSelectionChanged -= OnSelectionChanged;
         }
 
         protected override void OnStartup()
@@ -160,8 +161,10 @@ namespace creaCallejero
             Global.distritoLayer = capas[indexDistrito];
             Global.mallaVialLayer = capas[indexCapaVial];
             Global.cruceMallaVialLayer = capas[indexCruceMallavial];
+            Debug.WriteLine(layerName);
 
-            if (string.Equals(layerName, Global.mallavialName, StringComparison.OrdinalIgnoreCase) && !Global.creationStatus)            {
+            if (string.Equals(layerName, Global.mallavialName, StringComparison.OrdinalIgnoreCase) && !Global.creationStatus)
+            {
 
                 // Asignar valores a via editada
                 Global.fechaModificacionLocal = DateTime.Now;
@@ -170,9 +173,20 @@ namespace creaCallejero
                 viaEditada.Value[viaEditada.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
                 viaEditada.Value[viaEditada.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
                 //viaEditada.Value[viaEditada.Fields.FindField("MAQUINA")] = Global.nombreMaquina;
-                calculateChanges(viaEditada);                
+                calculateChanges(viaEditada); 
+                               
+                UID pUID = new UID();
+                // pUID.Value = "{59D2AFD2-9EA2-11D1-9165-0080C718DF97}";
+                // or you can use the ProgID
+                // pUID.Value = Editor.SaveEditCommand;
+                ICommandItem pCmdItem = ArcMap.Application.Document.CommandBars.Find(pUID);
+                pUID.SubType = 3;
+                pCmdItem.Execute();
             }
+
         }
+
+        private void OnSelectionChanged() { }
 
         // Probar con queryfilter de codigovia para seleccionar todas las vias que corresponden al codigovia editado
         // Eliminar via de crucemallavial
@@ -215,58 +229,7 @@ namespace creaCallejero
             IFeatureClass mallaVialFeatureClass = (Global.mallaVialLayer as IFeatureLayer).FeatureClass;
             IFeatureCursor cursorMalla = mallaVialFeatureClass.Update(queryCodigoSegmentoVia, false);
             IFeature cursorMallaFeature = cursorMalla.NextFeature();
-            // Empezar en el segundo feature del cursor
-            cursorMallaFeature = cursorMalla.NextFeature();
-
-            // Cuando se corta la via (Tienen mismo codigo de segmento)
-            // if (cursorMalla != null) { }
-            while (cursorMallaFeature != null)
-            {
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("NOMBREVIA")] = (Convert.ToString((viaEditada.Value[viaEditada.Fields.FindField("NOMBREVIA")]))).ToUpper();
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("TIPOVIA")] = Convert.ToString((viaEditada.Value[viaEditada.Fields.FindField("TIPOVIA")]));
-                callejero.calcularUbigeos(cursorMallaFeature, Global.distritoLayer as IFeatureLayer);
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("CODIGOSEGMENTOVIA")] = null;
-                callejero.calcularCodigoSegmentoVia(cursorMallaFeature, Global.mallaVialLayer as IFeatureLayer);
-                //cursorMallaFeature.Value[viaEditada.Fields.FindField("CODIGOVIA")] = null;
-                //calcularCodigoVia(cursorMallaFeature, Global.mallaVialLayer as IFeatureLayer);
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("USUARIOCREACION")] = Global.nombreUsuario.ToUpper();
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("FECHACREACION")] = Global.fechaCreacionLocal;
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
-                cursorMallaFeature.Value[viaEditada.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
-                //cursorMallaFeature.Value[viaEditada.Fields.FindField("MAQUINA")] = Global.nombreMaquina;
-                didUserSplit = true;
-                Global.creationStatus = true;
-                cursorMallaFeature.Store();
-                Global.creationStatus = false;
-                //if (Convert.ToString(cursorMallaFeature.Value[viaEditada.Fields.FindField("CODIGOVIA")]) != codigoViaMalla)
-                //{
-                //    callejero.insertarCruceMallaVial(cursorMallaFeature, Global.cruceMallaVialLayer);
-                //}
-                //else
-                //{
-                //    callejero.insertarCruceMallaVial(cursorMallaFeature, Global.cruceMallaVialLayer);                    
-                //}
-                cursorMallaFeature = cursorMalla.NextFeature();
-            }
-            cursorMallaFeature = null;
-        }
-
-        public void calculateChanges(IFeature via) // Probar eliminar cruce e insertar nuevos cruces
-        {
-            string layerName = (via.Class as IDataset).Name;
-            if (string.Equals(layerName, Global.cruceMallaVialName, StringComparison.OrdinalIgnoreCase)) { return; }
-            IFeature viaEditada = via;
-            int codigoSegmentoViaEditada = Convert.ToInt32(viaEditada.Value[viaEditada.Fields.FindField("CODIGOSEGMENTOVIA")]);
-            String codigoViaMalla = Convert.ToString(viaEditada.Value[viaEditada.Fields.FindField("CODIGOVIA")]);
-
-            IQueryFilter queryCodigoVia = new QueryFilter();
-            queryCodigoVia.WhereClause = $"CODIGOVIA = '{codigoViaMalla}'";
-
-            // Crear cursor mallavial
-            IFeatureClass mallaVialFeatureClass = (Global.mallaVialLayer as IFeatureLayer).FeatureClass;
-            IFeatureCursor cursorMalla = mallaVialFeatureClass.Update(queryCodigoVia, false);
-            IFeature cursorMallaFeature = cursorMalla.NextFeature();
-            int cursorMallaCount = mallaVialFeatureClass.FeatureCount(queryCodigoVia);
+            bool firstFeature = true;
 
             // Crear cursor crucemallavial
             IFeatureClass cruceMallaVialFeatureClass = (Global.cruceMallaVialLayer as IFeatureLayer).FeatureClass;
@@ -275,36 +238,113 @@ namespace creaCallejero
             if (cursorCruceFeature != null)
             {
                 cursorCruceFeature.Delete();
+                cursorCruceFeature.Store();
             }
-            actualizarSegmentosSplit(via);
 
-            //2.Calcular codigo e insertar
             while (cursorMallaFeature != null)
             {
-                cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
-                cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
-                //cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("MAQUINA")] = Global.nombreMaquina;
-                callejero.calcularUbigeos(cursorMallaFeature, Global.distritoLayer as IFeatureLayer);
-                if (didUserSplit == true)
+                // Verificar sin nombre
+                String nombreVia = Convert.ToString(cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("NOMBREVIA")]);
+
+                if (!firstFeature)
                 {
-                    cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = codigoViaMalla;
+                    cursorMallaFeature.Value[viaEditada.Fields.FindField("CODIGOSEGMENTOVIA")] = null;
+                    callejero.calcularCodigoSegmentoVia(cursorMallaFeature, Global.mallaVialLayer as IFeatureLayer);
+                } else
+                {
+                    firstFeature = false;
+                }
+
+                if (nombreVia == "SIN NOMBRE")
+                {
+                    cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = null;
+                    calcularCodigoVia(cursorMallaFeature, Global.mallaVialLayer as IFeatureLayer);                    
                 }
                 else
                 {
-                    cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = null;
+                    cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = codigoViaMalla;
                     calcularCodigoVia(cursorMallaFeature, Global.mallaVialLayer as IFeatureLayer);
                 }
+                                
+                callejero.calcularUbigeos(cursorMallaFeature, Global.distritoLayer as IFeatureLayer);
+                cursorMallaFeature.Value[viaEditada.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
+                cursorMallaFeature.Value[viaEditada.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
+                Global.creationStatus = true;
+                cursorMallaFeature.Store();
+                Global.creationStatus = false;
                 callejero.insertarCruceMallaVial(cursorMallaFeature, Global.cruceMallaVialLayer);
+
                 cursorMallaFeature = cursorMalla.NextFeature();
             }
-            if (didUserSplit == true)
+        }
+
+        public void calculateChanges(IFeature via) // Probar eliminar cruce e insertar nuevos cruces
+        {
+            string layerName = (via.Class as IDataset).Name;
+            if (string.Equals(layerName, Global.cruceMallaVialName, StringComparison.OrdinalIgnoreCase)) { return; }
+            IFeature viaEditada = via;
+            string tool = (Convert.ToString(ArcMap.Application.CurrentTool.Name)).ToUpper();
+            Debug.WriteLine(tool);
+
+            if (tool == "EDITOR_SPLITTOOL")
             {
-                m_editor.StopOperation("Road has been splitted");
-                m_editor.StopEditing(true);
-                IWorkspace workspace = (mallaVialFeatureClass as IDataset).Workspace;
-                m_editor.StartEditing(workspace);
+                actualizarSegmentosSplit(via);
             }
-            didUserSplit = false;
+            else
+            {
+                int codigoSegmentoViaEditada = Convert.ToInt32(viaEditada.Value[viaEditada.Fields.FindField("CODIGOSEGMENTOVIA")]);
+                //calcularCodigoVia(viaEditada, Global.mallaVialLayer as IFeatureLayer);
+                String codigoViaMalla = Convert.ToString(viaEditada.Value[viaEditada.Fields.FindField("CODIGOVIA")]);
+
+                IQueryFilter queryCodigoVia = new QueryFilter();
+                queryCodigoVia.WhereClause = $"CODIGOVIA = '{codigoViaMalla}'";
+
+                // Crear cursor mallavial
+                IFeatureClass mallaVialFeatureClass = (Global.mallaVialLayer as IFeatureLayer).FeatureClass;
+                IFeatureCursor cursorMalla = mallaVialFeatureClass.Update(queryCodigoVia, false);
+                IFeature cursorMallaFeature = cursorMalla.NextFeature();
+                int cursorMallaCount = mallaVialFeatureClass.FeatureCount(queryCodigoVia);
+
+                // Crear cursor crucemallavial
+                IFeatureClass cruceMallaVialFeatureClass = (Global.cruceMallaVialLayer as IFeatureLayer).FeatureClass;
+                IFeatureCursor cursorCruce = cruceMallaVialFeatureClass.Update(queryCodigoVia, false);
+                IFeature cursorCruceFeature = cursorCruce.NextFeature();
+                if (cursorCruceFeature != null)
+                {
+                    cursorCruceFeature.Delete();
+                    cursorCruceFeature.Store();
+                }
+                
+                //2.Calcular codigo e insertar
+                while (cursorMallaFeature != null)
+                {
+                    if (codigoSegmentoViaEditada == Convert.ToInt32(cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOSEGMENTOVIA")]))
+                    {
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
+                        //cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("MAQUINA")] = Global.nombreMaquina;
+                        //cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = null;
+                        callejero.calcularUbigeos(cursorMallaFeature, Global.distritoLayer as IFeatureLayer);
+                        //calcularCodigoVia(viaEditada, Global.mallaVialLayer as IFeatureLayer);
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = codigoViaMalla;
+                    }
+                    else
+                    {
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("USUARIOMODIFICACION")] = Global.nombreUsuario.ToUpper();
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("FECHAMODIFICACION")] = Global.fechaModificacionLocal;
+                        cursorMallaFeature.Value[cursorMallaFeature.Fields.FindField("CODIGOVIA")] = codigoViaMalla;
+                        callejero.insertarCruceMallaVial(cursorMallaFeature, Global.cruceMallaVialLayer);
+                    }
+                    Debug.WriteLine(cursorMallaFeature.Value[viaEditada.Fields.FindField("CODIGOVIA")]);
+                    cursorMallaFeature = cursorMalla.NextFeature();
+                }
+
+                //3 Insertar via editada
+                viaEditada.Value[viaEditada.Fields.FindField("CODIGOVIA")] = null;
+                calcularCodigoVia(viaEditada, Global.mallaVialLayer as IFeatureLayer);
+                callejero.insertarCruceMallaVial(viaEditada, Global.cruceMallaVialLayer);
+
+            }
             
         }
 
